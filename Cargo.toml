@@ -1,0 +1,10 @@
+[package]
+name = "sudoku_rs"
+version = "0.1.0"
+authors = ["Divino Menezes <dgmneto@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+quicli = "0.4"
+structopt = "0.2"
+csv = "1.1"
