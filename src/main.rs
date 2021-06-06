@@ -48,7 +48,7 @@ fn main() -> CliResult {
         let record = record_result?;
         let g = grid::from_line(&record[puzzle_col]);
         match solver::solve(g, 0, 0) {
-            Ok(g) => println!("{},{}", &record[puzzle_col], g.to_line()),
+            Ok(g) => println!("{},{}", &record[puzzle_col], g),
             Err(g) => {
                 println!("Didn't find solution {} {:?}", &record[puzzle_col], g);
                 return Ok(());

@@ -4,7 +4,10 @@ macro_rules! sqr_idx {
     }};
 }
 
-#[derive(Debug, Clone)]
+use std::fmt;
+use std::fmt::Write;
+
+#[derive(Debug, Clone, Eq, PartialEq)]
 pub struct Grid {
     grid: Vec<Vec<u8>>,
 
@@ -44,20 +47,18 @@ impl Grid {
             .map(|num| num + 1)
             .collect()
     }
+}
 
-    pub fn to_line(&self) -> String {
-        let bytes = self
-            .grid
-            .iter()
-            .flatten()
-            .map(|num| {
-                if *num >= 1 && *num <= 9 {
-                    return b'0' + num;
-                }
-                b'.'
-            })
-            .collect();
-        String::from_utf8(bytes).unwrap()
+impl fmt::Display for Grid {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> std::fmt::Result {
+        for num in self.grid.iter().flatten() {
+            if *num != 0 {
+                fmt.write_char((b'0' + num) as char)?;
+            } else {
+                fmt.write_char('.')?;
+            }
+        }
+        Ok(())
     }
 }
 
