@@ -9,11 +9,11 @@ use std::fmt::Write;
 
 #[derive(Debug, Clone, Eq, PartialEq)]
 pub struct Grid {
-    grid: Vec<Vec<u8>>,
+    grid: [[u8; 9]; 9],
 
-    rows_presence: Vec<u16>,
-    cols_presence: Vec<u16>,
-    sqrs_presence: Vec<u16>,
+    rows_presence: [u16; 9],
+    cols_presence: [u16; 9],
+    sqrs_presence: [u16; 9],
 }
 
 impl Grid {
@@ -64,11 +64,11 @@ impl fmt::Display for Grid {
 
 pub fn from_line(line: &str) -> Grid {
     let mut grid = Grid {
-        grid: vec![vec![0; 9]; 9],
+        grid: [[0u8; 9]; 9],
 
-        rows_presence: vec![0; 9],
-        cols_presence: vec![0; 9],
-        sqrs_presence: vec![0; 9],
+        rows_presence: [0u16; 9],
+        cols_presence: [0u16; 9],
+        sqrs_presence: [0u16; 9],
     };
 
     line.bytes().enumerate().for_each(|(idx, chr)| {

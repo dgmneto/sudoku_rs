@@ -13,7 +13,6 @@ mod bench {
     #[bench]
     fn random_samples_bench<'a>(b: &'a mut Bencher) {
         for line in &RANDOM_SAMPLES[0 .. 10] {
-            println!("{}", line);
             let grid = grid::from_line(line);
             b.iter(move || {
                 solver::solve(grid.clone(), 0, 0).unwrap();
