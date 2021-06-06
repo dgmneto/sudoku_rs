@@ -1,0 +1,84 @@
+dgmneto@Air-von-Divino sudoku_rs % cargo bench
+   Compiling sudoku_rs v0.1.0 (/Users/dgmneto/sudoku_rs)
+    Finished bench [optimized] target(s) in 2.58s
+     Running unittests (target/release/deps/sudoku_rs-1822e9bf2c4dda35)
+
+running 1 test
+test solver::tests::test_solve ... ignored
+
+test result: ok. 0 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests (target/release/deps/sudoku_rs-5f1d13e16c898cc7)
+
+running 1 test
+test solver::tests::test_solve ... ignored
+
+test result: ok. 0 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests (target/release/deps/benchmark-93e3965b15428d4f)
+WARNING: HTML report generation will become a non-default optional feature in Criterion.rs 0.4.0.
+This feature is being moved to cargo-criterion (https://github.com/bheisler/cargo-criterion) and will be optional in a future version of Criterion.rs. To silence this warning, either switch to cargo-criterion or enable the 'html_reports' feature in your Cargo.toml.
+
+Gnuplot not found, using plotters backend
+Naive Backtracking/Random Sample 0                                                                             
+                        time:   [3.1997 ms 3.2210 ms 3.2416 ms]
+                        change: [-3.3698% -2.7546% -2.1235%] (p = 0.00 < 0.05)
+                        Performance has improved.
+Naive Backtracking/Random Sample 1                                                                             
+                        time:   [3.6316 ms 3.6562 ms 3.6810 ms]
+                        change: [-3.4106% -2.4815% -1.5633%] (p = 0.00 < 0.05)
+                        Performance has improved.
+Naive Backtracking/Random Sample 2                                                                            
+                        time:   [11.970 ms 12.052 ms 12.134 ms]
+                        change: [-2.1232% -1.1840% -0.1801%] (p = 0.02 < 0.05)
+                        Change within noise threshold.
+Naive Backtracking/Random Sample 3                                                                            
+                        time:   [616.45 us 618.18 us 620.01 us]
+                        change: [-3.2933% -2.5682% -1.8148%] (p = 0.00 < 0.05)
+                        Performance has improved.
+Naive Backtracking/Random Sample 4                                                                            
+                        time:   [103.11 us 103.55 us 104.02 us]
+                        change: [+0.5592% +1.4043% +2.1962%] (p = 0.00 < 0.05)
+                        Change within noise threshold.
+Benchmarking Naive Backtracking/Random Sample 5: Warming up for 3.0000 s
+Warning: Unable to complete 100 samples in 5.0s. You may wish to increase target time to 6.8s, enable flat sampling, or reduce sample count to 60.
+Naive Backtracking/Random Sample 5                                                                             
+                        time:   [1.3456 ms 1.3477 ms 1.3498 ms]
+                        change: [-6.6528% -6.0849% -5.4676%] (p = 0.00 < 0.05)
+                        Performance has improved.
+Found 23 outliers among 100 measurements (23.00%)
+  3 (3.00%) low severe
+  5 (5.00%) low mild
+  1 (1.00%) high mild
+  14 (14.00%) high severe
+Benchmarking Naive Backtracking/Random Sample 6: Warming up for 3.0000 s
+Warning: Unable to complete 100 samples in 5.0s. You may wish to increase target time to 8.5s, enable flat sampling, or reduce sample count to 50.
+Naive Backtracking/Random Sample 6                                                                             
+                        time:   [1.6699 ms 1.6772 ms 1.6856 ms]
+                        change: [-4.0880% -3.5583% -2.9905%] (p = 0.00 < 0.05)
+                        Performance has improved.
+Found 18 outliers among 100 measurements (18.00%)
+  16 (16.00%) high mild
+  2 (2.00%) high severe
+Naive Backtracking/Random Sample 7                                                                            
+                        time:   [30.468 ms 30.653 ms 30.846 ms]
+                        change: [-3.3087% -2.3694% -1.3726%] (p = 0.00 < 0.05)
+                        Performance has improved.
+Benchmarking Naive Backtracking/Random Sample 8: Warming up for 3.0000 s
+Warning: Unable to complete 100 samples in 5.0s. You may wish to increase target time to 6.4s, enable flat sampling, or reduce sample count to 60.
+Naive Backtracking/Random Sample 8                                                                             
+                        time:   [1.2804 ms 1.2865 ms 1.2941 ms]
+                        change: [-3.9231% -3.4466% -2.9729%] (p = 0.00 < 0.05)
+                        Performance has improved.
+Found 1 outliers among 100 measurements (1.00%)
+  1 (1.00%) high severe
+Naive Backtracking/Random Sample 9                                                                             
+                        time:   [2.1281 ms 2.1314 ms 2.1347 ms]
+                        change: [-4.2349% -3.2457% -2.3612%] (p = 0.00 < 0.05)
+                        Performance has improved.
+Benchmarking Naive Backtracking/Hard Sample 0: Warming up for 3.0000 s
+Warning: Unable to complete 100 samples in 5.0s. You may wish to increase target time to 722.7s, or reduce sample count to 10.
+Naive Backtracking/Hard Sample 0                                                                            
+                        time:   [7.2145 s 7.2216 s 7.2291 s]
+Found 2 outliers among 100 measurements (2.00%)
+  2 (2.00%) high mild

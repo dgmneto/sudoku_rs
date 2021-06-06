@@ -7,7 +7,7 @@ macro_rules! sqr_idx {
 use std::fmt;
 use std::fmt::Write;
 
-#[derive(Debug, Clone, Eq, PartialEq)]
+#[derive(Debug, Copy, Clone, Eq, PartialEq)]
 pub struct Grid {
     grid: [[u8; 9]; 9],
 
