@@ -2,28 +2,51 @@ use sudoku_rs::{grid, solver};
 
 use criterion::BenchmarkId;
 use criterion::Criterion;
+use criterion::Throughput;
 use criterion::{criterion_group, criterion_main};
 
 pub fn benchmark(c: &mut Criterion) {
-    let mut naive_backtracking = c.benchmark_group("Naive Backtracking");
+    let mut naive_backtracking = c.benchmark_group("Sudoku Backtracking");
     for (idx, line) in RANDOM_SAMPLES[0..10].iter().enumerate() {
+        naive_backtracking.throughput(Throughput::Elements(1));
         naive_backtracking.bench_with_input(
-            BenchmarkId::from_parameter(format!("Random Sample {}", idx)),
+            BenchmarkId::new("Naive", format!("Random Sample {}", idx)),
             line,
             |b, line| {
-                let grid = grid::from_line(line);
-                b.iter(|| solver::solve(grid, 0, 0).unwrap());
+                let mut grid = grid::from_line(line);
+                b.iter(|| {solver::solve(&mut grid, false).unwrap();});
+            },
+        );
+
+        naive_backtracking.throughput(Throughput::Elements(1));
+        naive_backtracking.bench_with_input(
+            BenchmarkId::new("Sorted", format!("Random Sample {}", idx)),
+            line,
+            |b, line| {
+                let mut grid = grid::from_line(line);
+                b.iter(|| {solver::solve(&mut grid, true).unwrap();});
             },
         );
     }
 
     for (idx, line) in HARD_SAMPLES.iter().enumerate() {
+        naive_backtracking.throughput(Throughput::Elements(1));
         naive_backtracking.bench_with_input(
-            BenchmarkId::from_parameter(format!("Hard Sample {}", idx)),
+            BenchmarkId::new("Naive", format!("Hard Sample {}", idx)),
             line,
             |b, line| {
-                let grid = grid::from_line(line);
-                b.iter(|| solver::solve(grid, 0, 0).unwrap());
+                let mut grid = grid::from_line(line);
+                b.iter(|| {solver::solve(&mut grid, false).unwrap();});
+            },
+        );
+
+        naive_backtracking.throughput(Throughput::Elements(1));
+        naive_backtracking.bench_with_input(
+            BenchmarkId::new("Sorted", format!("Hard Sample {}", idx)),
+            line,
+            |b, line| {
+                let mut grid = grid::from_line(line);
+                b.iter(|| {solver::solve(&mut grid, false).unwrap();});
             },
         );
     }

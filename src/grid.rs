@@ -16,6 +16,12 @@ pub struct Grid {
     sqrs_presence: [u16; 9],
 }
 
+fn count_unset_bitmask(bitmask: u16) -> u8 {
+    (0..9)
+        .filter(move |num| ((bitmask >> num) & 1) == 0)
+        .count() as u8
+}
+
 impl Grid {
     pub fn set(&mut self, i: usize, j: usize, num: u8) {
         self.grid[i][j] = num;
@@ -39,6 +45,17 @@ impl Grid {
         return self.grid[i][j] != 0;
     }
 
+    #[inline]
+    pub fn count_unset_row(&self, &i: &usize) -> u8 {
+        count_unset_bitmask(self.rows_presence[i])
+    }
+
+    #[inline]
+    pub fn count_unset_col(&self, &j: &usize) -> u8 {
+        count_unset_bitmask(self.cols_presence[j])
+    }
+
+    #[inline]
     pub fn available(&self, i: usize, j: usize) -> Vec<u8> {
         let bit_mask =
             self.rows_presence[i] | self.cols_presence[j] | self.sqrs_presence[sqr_idx!(i, j)];
