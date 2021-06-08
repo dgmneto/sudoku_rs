@@ -21,8 +21,7 @@ fn solve_impl<'b>(
     if grid.is_set(i, j) {
         return solve_impl(order, grid, n + 1, any_change);
     }
-    let availables = grid.available(i, j);
-    for num in availables {
+    for &num in grid.available(i, j) {
         grid.set(i, j, num);
         if let Ok(_) = solve_impl(order, grid, n + 1, true) {
             return Ok(());
