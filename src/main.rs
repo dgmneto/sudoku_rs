@@ -48,8 +48,8 @@ fn main() -> CliResult {
         let record = record_result?;
         let mut g = grid::from_line(&record[puzzle_col]);
         match solver::solve(&mut g, true) {
-            Ok(g) => println!("{},{}", &record[puzzle_col], g),
-            Err(g) => {
+            Ok(_) => println!("{},{}", &record[puzzle_col], g),
+            Err(_) => {
                 println!("Didn't find solution {} {:?}", &record[puzzle_col], g);
                 return Ok(());
             }

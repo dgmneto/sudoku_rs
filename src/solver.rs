@@ -7,16 +7,15 @@ fn solve_impl<'b>(
     grid: &'b mut grid::Grid,
     n: usize,
     any_change: bool,
-) -> Result<&'b mut grid::Grid, &'b mut grid::Grid> {
+) -> Result<(), ()> {
     if n >= 81 {
         return if !any_change {
-            Err(grid)
+            Err(())
         } else {
-            Ok(grid)
+            Ok(())
         }
     }
 
-    let mut grid = grid;
     let i = order.0[n / 9];
     let j = order.1[n % 9];
     if grid.is_set(i, j) {
@@ -25,14 +24,13 @@ fn solve_impl<'b>(
     let availables = grid.available(i, j);
     for num in availables {
         grid.set(i, j, num);
-        grid = match solve_impl(order, grid, n + 1, true) {
-            Ok(grid) => return Ok(grid),
-            Err(grid) => grid,
-        };
+        if let Ok(_) = solve_impl(order, grid, n + 1, true) {
+            return Ok(());
+        }
         grid.unset(i, j, num);
     }
 
-    Err(grid)
+    Err(())
 }
 
 const DEFAULT_ORDER: SolvingOrder = ([0, 1, 2, 3, 4, 5, 6, 7, 8], [0, 1, 2, 3, 4, 5, 6, 7, 8]);
@@ -51,12 +49,9 @@ fn order(grid: &mut grid::Grid, sort: bool) -> SolvingOrder {
 pub fn solve<'a>(
     grid: &'a mut grid::Grid,
     sort_solving: bool,
-) -> Result<&'a mut grid::Grid, &'a mut grid::Grid> {
+) -> Result<(), ()> {
     let order = order(grid, sort_solving);
-    match solve_impl(&order, grid, 0, false) {
-        Ok(grid) => Ok(grid),
-        Err(grid) => Err(grid),
-    }
+    return solve_impl(&order, grid, 0, false)
 }
 
 #[cfg(test)]
@@ -82,10 +77,10 @@ mod tests {
     fn test_naive() -> Result<(), String> {
         for (input, output) in &SAMPLES {
             let mut in_grid = grid::from_line(input);
-            let mut out_grid = grid::from_line(output);
+            let out_grid = grid::from_line(output);
             match solve(&mut in_grid, false) {
-                Ok(solution) => assert_eq!(solution, &mut out_grid),
-                Err(in_grid) => return Err(format!("Couldn't find solution for {}", in_grid)),
+                Ok(_) => assert_eq!(in_grid, out_grid),
+                Err(_) => return Err(format!("Couldn't find solution for {}", in_grid)),
             };
         }
 
@@ -96,10 +91,10 @@ mod tests {
     fn test_sorted() -> Result<(), String> {
         for (input, output) in &SAMPLES {
             let mut in_grid = grid::from_line(input);
-            let mut out_grid = grid::from_line(output);
+            let out_grid = grid::from_line(output);
             match solve(&mut in_grid, true) {
-                Ok(solution) => assert_eq!(solution, &mut out_grid),
-                Err(in_grid) => return Err(format!("Couldn't find solution for {}", in_grid)),
+                Ok(_) => assert_eq!(in_grid, out_grid),
+                Err(_) => return Err(format!("Couldn't find solution for {}", in_grid)),
             };
         }
 
