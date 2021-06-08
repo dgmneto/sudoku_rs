@@ -1,64 +1,63 @@
 use sudoku_rs::{grid, solver};
 
-use criterion::BenchmarkId;
-use criterion::Criterion;
-use criterion::Throughput;
+use criterion::{BenchmarkId, BatchSize, Criterion, Throughput};
 use criterion::{criterion_group, criterion_main};
 
 pub fn benchmark(c: &mut Criterion) {
-    let mut naive_backtracking = c.benchmark_group("Sudoku Backtracking");
-    for (idx, line) in RANDOM_SAMPLES[0..10].iter().enumerate() {
-        naive_backtracking.throughput(Throughput::Elements(1));
-        naive_backtracking.bench_with_input(
-            BenchmarkId::new("Naive", format!("Random Sample {}", idx)),
-            line,
-            |b, line| {
-                let mut grid = grid::from_line(line);
-                b.iter(|| {solver::solve(&mut grid, false).unwrap();});
+    let mut benchmark = c.benchmark_group("Sudoku Backtracking");
+
+    let sets = vec![
+        (
+            "Random Samples",
+            RANDOM_SAMPLES.iter().take(10).collect::<Vec<&&str>>(),
+        ),
+        ("Hard Samples", HARD_SAMPLES.iter().collect::<Vec<&&str>>()),
+    ];
+    for (name, lines) in sets {
+        let grids = lines.iter().map(|line| grid::from_line(line)).collect::<Vec<grid::Grid>>();
+        benchmark.throughput(Throughput::Elements(lines.len() as u64));
+        benchmark.bench_with_input(
+            BenchmarkId::new("Sorted", name),
+            &grids,
+            |b, grids| {
+                b.iter_batched(
+                    || grids.clone(),
+                    |grids| {
+                        for mut grid in grids {
+                            solver::solve(&mut grid, true).unwrap();
+                        }
+                    },
+                    BatchSize::SmallInput
+                );
             },
         );
 
-        naive_backtracking.throughput(Throughput::Elements(1));
-        naive_backtracking.bench_with_input(
-            BenchmarkId::new("Sorted", format!("Random Sample {}", idx)),
-            line,
-            |b, line| {
-                let mut grid = grid::from_line(line);
-                b.iter(|| {solver::solve(&mut grid, true).unwrap();});
+        benchmark.throughput(Throughput::Elements(lines.len() as u64));
+        benchmark.bench_with_input(
+            BenchmarkId::new("Naive", name),
+            &grids,
+            |b, grids| {
+                b.iter_batched(
+                    || grids.clone(),
+                    |grids| {
+                        for mut grid in grids {
+                            solver::solve(&mut grid, false).unwrap();
+                        }
+                    },
+                    BatchSize::SmallInput
+                );
             },
         );
     }
 
-    for (idx, line) in HARD_SAMPLES.iter().enumerate() {
-        naive_backtracking.throughput(Throughput::Elements(1));
-        naive_backtracking.bench_with_input(
-            BenchmarkId::new("Naive", format!("Hard Sample {}", idx)),
-            line,
-            |b, line| {
-                let mut grid = grid::from_line(line);
-                b.iter(|| {solver::solve(&mut grid, false).unwrap();});
-            },
-        );
-
-        naive_backtracking.throughput(Throughput::Elements(1));
-        naive_backtracking.bench_with_input(
-            BenchmarkId::new("Sorted", format!("Hard Sample {}", idx)),
-            line,
-            |b, line| {
-                let mut grid = grid::from_line(line);
-                b.iter(|| {solver::solve(&mut grid, false).unwrap();});
-            },
-        );
-    }
-    naive_backtracking.finish();
+    benchmark.finish();
 }
 
 criterion_group!(benches, benchmark);
 criterion_main!(benches);
 
-const HARD_SAMPLES: [&str; 1] = [
-    "..............3.85..1.2.......5.7.....4...1...9.......5......73..2.1........4...9",
-];
+const HARD_SAMPLES: [&str; 1] =
+    ["..............3.85..1.2.......5.7.....4...1...9.......5......73..2.1........4...9"];
 
 const RANDOM_SAMPLES: [&str; 100] = [
     "4....927...5.1........6.9.8..1.86...6..4.......9..1.5....348.........132....7....",

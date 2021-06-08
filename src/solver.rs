@@ -1,10 +1,14 @@
 use crate::grid;
 
-fn solve_impl<'b>(order: &[(usize, usize); 81], grid: &'b mut grid::Grid, n: usize) -> Result<&'b mut grid::Grid, &'b mut grid::Grid> {
+fn solve_impl<'b>(
+    order: &[(usize, usize); 81],
+    grid: &'b mut grid::Grid,
+    n: usize,
+) -> Result<&'b mut grid::Grid, &'b mut grid::Grid> {
     if n >= 81 {
         return Ok(grid);
     }
-    
+
     let mut grid = grid;
     let (i, j) = order[n];
     if grid.is_set(i, j) {
@@ -50,11 +54,10 @@ pub fn solve<'a>(
     sort_solving: bool,
 ) -> Result<&'a mut grid::Grid, &'a mut grid::Grid> {
     let order = order(grid, sort_solving);
-    let result = match solve_impl(&order, grid, 0) {
+    match solve_impl(&order, grid, 0) {
         Ok(grid) => Ok(grid),
         Err(grid) => Err(grid),
-    };
-    result
+    }
 }
 
 #[cfg(test)]
@@ -100,6 +103,7 @@ mod tests {
                 Err(in_grid) => return Err(format!("Couldn't find solution for {}", in_grid)),
             };
         }
+
         Ok(())
     }
 }
