@@ -1,23 +1,31 @@
 use crate::grid;
 
+type SolvingOrder = ([usize; 9], [usize; 9]);
+
 fn solve_impl<'b>(
-    order: &[(usize, usize); 81],
+    order: &SolvingOrder,
     grid: &'b mut grid::Grid,
     n: usize,
+    any_change: bool,
 ) -> Result<&'b mut grid::Grid, &'b mut grid::Grid> {
     if n >= 81 {
-        return Ok(grid);
+        return if !any_change {
+            Err(grid)
+        } else {
+            Ok(grid)
+        }
     }
 
     let mut grid = grid;
-    let (i, j) = order[n];
+    let i = order.0[n / 9];
+    let j = order.1[n % 9];
     if grid.is_set(i, j) {
-        return solve_impl(order, grid, n + 1);
+        return solve_impl(order, grid, n + 1, any_change);
     }
     let availables = grid.available(i, j);
     for num in availables {
         grid.set(i, j, num);
-        grid = match solve_impl(order, grid, n + 1) {
+        grid = match solve_impl(order, grid, n + 1, true) {
             Ok(grid) => return Ok(grid),
             Err(grid) => grid,
         };
@@ -27,26 +35,17 @@ fn solve_impl<'b>(
     Err(grid)
 }
 
+const DEFAULT_ORDER: SolvingOrder = ([0, 1, 2, 3, 4, 5, 6, 7, 8], [0, 1, 2, 3, 4, 5, 6, 7, 8]);
+
 #[inline]
-fn order(grid: &mut grid::Grid, sort: bool) -> [(usize, usize); 81] {
-    let mut rows = [0; 9];
-    for row in 0..9 {
-        rows[row] = row;
+fn order(grid: &mut grid::Grid, sort: bool) -> SolvingOrder {
+    if !sort {
+        return DEFAULT_ORDER;
     }
-    let mut cols = rows.clone();
-    if sort {
-        rows.sort_unstable_by_key(|row| grid.count_unset_row(row));
-        cols.sort_unstable_by_key(|col| grid.count_unset_col(col));
-    }
-    let mut order = [(0, 0); 81];
-    let mut idx = 0;
-    for row in &rows {
-        for col in &cols {
-            order[idx] = (*row, *col);
-            idx += 1;
-        }
-    }
-    order
+    let (mut rows, mut cols) = DEFAULT_ORDER;
+    rows.sort_unstable_by_key(|row| grid.count_unset_row(row));
+    cols.sort_unstable_by_key(|col| grid.count_unset_col(col));
+    (rows, cols)
 }
 
 pub fn solve<'a>(
@@ -54,7 +53,7 @@ pub fn solve<'a>(
     sort_solving: bool,
 ) -> Result<&'a mut grid::Grid, &'a mut grid::Grid> {
     let order = order(grid, sort_solving);
-    match solve_impl(&order, grid, 0) {
+    match solve_impl(&order, grid, 0, false) {
         Ok(grid) => Ok(grid),
         Err(grid) => Err(grid),
     }
